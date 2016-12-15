@@ -5,19 +5,22 @@
 #include <vector>
 #include "Graph.hpp"
 #include "Hypergraph.hpp"
+#include "WebPage.h"
 
 typedef std::vector<double> PageRank;
 
 class PageRankComputer {
+private:
+	vector<std::string> _split(const string &s, char delim) const;
 public:
 	// Constructor
 	PageRankComputer();
 	// Destructor
 	~PageRankComputer();
 	// Loads an graph from a file
-	Graph<std::string> loadGraph(const std::string & fileName);
+	Graph<WebPage> loadGraph(const std::string & nodeFilename, const std::string & edgeFilename);
 	// Loads an hypergraph from a graph
-	Hypergraph<std::string> loadHypergraph(const std::string & fileName);
+	Hypergraph<WebPage> loadHypergraph(const std::string & nodeFilename, const std::string & edgeFilename);
 	// Calculates the PageRank of a graph
 	PageRank computePageRank(Graph<std::string> & graph, const bool articleVersion);
 	// Calculates the pageRank of an hypergraph

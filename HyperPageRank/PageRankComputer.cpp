@@ -1,4 +1,6 @@
 #include "PageRankComputer.hpp"
+#include <fstream>
+#include <sstream>
 
 // Computes the number of referenced pages in an hypergraph
 double getNbReferencedPages(Matrix<int> & matrix) {
@@ -30,12 +32,60 @@ PageRankComputer::PageRankComputer() {
 PageRankComputer::~PageRankComputer() {
 }
 
-Graph<std::string> PageRankComputer::loadGraph(const std::string & fileName) {
-	return Graph<std::string>();
+Graph<WebPage> PageRankComputer::loadGraph(const std::string & nodeFilename, const std::string & edgeFilename) {
+	ifstream inNodefile(nodeFilename);
+	ifstream inEdgefile(edgeFilename);
+	
+	Graph<WebPage> graph;
+	cout << "Reading Nodes...";
+	string dummyLine;
+
+	//skipping first lines
+	getline(inNodefile, dummyLine);
+
+	while (inNodefile)
+	{
+		string line;
+		getline(inNodefile, line);
+		vector<string> nodeLine = this->_split(line, ' ');
+		WebPage page = WebPage(stoi(nodeLine[0]), URL(nodeLine[2]));
+		graph.addNode(page);
+	}
+	cout << " Done." << endl;
+
+	cout << "Reading Edges...";
+
+	//skipping first lines
+	getline(inEdgefile, dummyLine);
+
+	while (inEdgefile)
+	{
+		string line;
+		getline(inNodefile, line);
+		vector<string> nodeLine = this->_split(line, ' ');
+		WebPage source = WebPage(stoi(nodeLine[0]));
+		WebPage destination = WebPage(stoi(nodeLine[0]));
+		graph.addArc(source.getId(), destination.getId());
+	}
+	cout << " Done." << endl;
+
+	return graph;
 }
 
-Hypergraph<std::string> PageRankComputer::loadHypergraph(const std::string & fileName) {
-	return Hypergraph<std::string>();
+vector<string> PageRankComputer::_split(const string &s, char delim) const
+{
+	vector<string> result = vector<string>();
+	stringstream ss;
+	ss.str(s);
+	string item;
+	while (getline(ss, item, delim)) {
+		result.push_back(item);
+	}
+	return result;
+}
+
+Hypergraph<WebPage> PageRankComputer::loadHypergraph(const std::string & nodeFilename, const std::string & edgeFilename) {
+	return Hypergraph<WebPage>();
 }
 
 PageRank PageRankComputer::computePageRank(Graph<std::string> & graph, const bool articleVersion) {

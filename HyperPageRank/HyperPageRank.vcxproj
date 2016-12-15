@@ -110,11 +110,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CommandLineProcessor.cpp" />
     <ClCompile Include="IndexOutOfBoundsException.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PageRankComputer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommandLineProcessor.h" />
     <ClInclude Include="Graph.hpp" />
     <ClInclude Include="Hypergraph.hpp" />
     <ClInclude Include="IndexOutOfBoundsException.hpp" />

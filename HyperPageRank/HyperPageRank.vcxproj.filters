@@ -24,6 +24,9 @@
     <ClCompile Include="IndexOutOfBoundsException.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CommandLineProcessor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Hypergraph.hpp">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IndexOutOfBoundsException.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandLineProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

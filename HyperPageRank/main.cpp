@@ -5,6 +5,7 @@
 #include "Graph.hpp"
 #include "Hypergraph.hpp"
 #include "PageRankComputer.hpp"
+#include "CommandLineProcessor.h"
 
 
 int main() {
@@ -160,6 +161,12 @@ int main() {
 	std::cout << "HyperPageRank (HG2):" << std::endl;
 	std::cout << HP2;
 	std::cout << "----------------------------------------------------------------" << std::endl;
+
+
+	//COMMANDLINE PROCESSOR
+	CommandLineProcessor cmd;
+	//cmd.run();
+
 	system("PAUSE");
 	return EXIT_SUCCESS;
 }
