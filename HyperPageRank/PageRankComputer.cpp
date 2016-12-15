@@ -135,6 +135,46 @@ PageRank PageRankComputer::computeHyperPageRank(Hypergraph<std::string> & hyperg
 	return pageRank;
 }
 
+PageRank PageRankComputer::computeIndegree(Graph<std::string>& graph) {
+	PageRank indegree;
+	indegree.clear();
+	long nbPages = graph.getNodeList().size();
+	long i, j;
+	for (i = 0; i < nbPages; i++) {
+		indegree.push_back(0);
+	}
+	// Iterates on all the pages
+	for (i = 0; i < nbPages; i++) {
+		// Iterates on all the pages pointed by the current one 
+		IndexList pointedPages = graph.getPointedNodes(i);
+		for (j = 0; j < pointedPages.size(); j++) {
+			indegree.at(pointedPages.at(j))++;
+		}
+	}
+	return indegree;
+}
+
+PageRank PageRankComputer::computeHyperIndegree(Hypergraph<std::string>& hypergraph) {
+	long nbPages = hypergraph.getNodeList().size();
+	long nbBlocks = hypergraph.getHyperarcMatrix().getNbColumns();
+	PageRank blockRank(nbBlocks);
+	PageRank hyperIndegree;
+	hyperIndegree.clear();
+	long i, j;
+	for (i = 0; i < nbPages; i++) {
+		hyperIndegree.push_back(0);
+	}
+	// Iterates on all the blocks
+	for (i = 0; i < nbBlocks; i++) {
+		// Iterates on all the pages pointed by the current block 
+		IndexList pointedPages = hypergraph.getPointedNodes(i);
+		for (j = 0; j < pointedPages.size(); j++) {
+			hyperIndegree.at(pointedPages.at(j))++;
+		}
+	}
+	return hyperIndegree;
+}
+
 std::ostream & operator<<(std::ostream & flux, PageRank & pageRank) {
 	for (int i = 0; i < pageRank.size(); i++) {
 		flux << pageRank.at(i) << std::endl;

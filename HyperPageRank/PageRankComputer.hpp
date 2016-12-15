@@ -22,6 +22,10 @@ public:
 	PageRank computePageRank(Graph<std::string> & graph, const bool articleVersion);
 	// Calculates the pageRank of an hypergraph
 	PageRank computeHyperPageRank(Hypergraph<std::string> & hypergraph);
+	// Applies the Indegree algorithm on a graph
+	PageRank computeIndegree(Graph<std::string> & graph);
+	// Applies the Indegree algorithm on a hypergraph
+	PageRank computeHyperIndegree(Hypergraph<std::string> & hypergraph);
 };
 
 std::ostream & operator<<(std::ostream & flux, PageRank & pageRank);
