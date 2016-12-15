@@ -162,6 +162,20 @@ int main() {
 	std::cout << HP2;
 	std::cout << "----------------------------------------------------------------" << std::endl;
 
+	std::cout << "------------------------ Tests Indegree ------------------------" << std::endl;
+	PageRank ID1 = computer.computeIndegree(graphPR1);
+	std::cout << ID1 << std::endl;
+	PageRank ID2 = computer.computeIndegree(graphPR2);
+	std::cout << ID2 << std::endl;
+	PageRank ID3 = computer.computeIndegree(graphPR3);
+	std::cout << ID3 << std::endl;
+	std::cout << "----------------------------------------------------------------" << std::endl;
+	std::cout << "---------------------- Tests HyperIndegree ---------------------" << std::endl;
+	PageRank HID1 = computer.computeHyperIndegree(hyperGraph1);
+	std::cout << HID1 << std::endl;
+	PageRank HID2 = computer.computeHyperIndegree(hyperGraph2);
+	std::cout << HID2 << std::endl;
+	std::cout << "----------------------------------------------------------------" << std::endl;
 
 	//COMMANDLINE PROCESSOR
 	CommandLineProcessor cmd;
