@@ -49,7 +49,7 @@ URL URL::Parse(const wstring url)
 	}
 	else protocolEnd = url.begin();
 
-									
+
 	iterator_t hostStart = protocolEnd;
 	iterator_t pathStart = find(hostStart, urlEnd, L'/');
 
@@ -58,6 +58,29 @@ URL URL::Parse(const wstring url)
 		L':');
 
 	result.Host = wstring(hostStart, hostEnd);
+
+	iterator_t realHostBegin;
+	iterator_t realHostEnd;
+	wstring realHost;
+
+	if (result.Host.find(L"www.") == 0)
+	{
+		realHost = result.Host.erase(0, 4);
+		realHostBegin = realHost.begin();
+		realHostEnd = realHost.end();
+	}
+	else
+	{
+		realHost = result.Host;
+		realHostBegin = hostStart;
+		realHostEnd = hostEnd;
+	}
+
+	iterator_t domainStart = find(realHostBegin, realHostEnd, L'.');
+	++domainStart;
+	result.Domain = wstring(domainStart, realHostEnd);
+
+
 
 	if ((hostEnd != urlEnd) && ((&*(hostEnd))[0] == L':'))
 	{
