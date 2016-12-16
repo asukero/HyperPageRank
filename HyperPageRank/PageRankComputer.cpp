@@ -48,8 +48,11 @@ Graph<WebPage> PageRankComputer::loadGraph(const std::string & nodeFilename, con
 		string line;
 		getline(inNodefile, line);
 		vector<string> nodeLine = this->_split(line, ' ');
-		WebPage page = WebPage(URL(nodeLine[2]), stoi(nodeLine[0]));
-		graph.addNode(page);
+		// If the line has the correct format (not empty, enough arguments...)
+		if (nodeLine.size() > 2) {
+			WebPage page = WebPage(URL(nodeLine[2]), stoi(nodeLine[0]));
+			graph.addNode(page);
+		}
 	}
 	cout << " Done." << endl;
 
@@ -61,11 +64,15 @@ Graph<WebPage> PageRankComputer::loadGraph(const std::string & nodeFilename, con
 	while (inEdgefile)
 	{
 		string line;
-		getline(inNodefile, line);
+		getline(inEdgefile, line);
 		vector<string> nodeLine = this->_split(line, ' ');
-		WebPage source = WebPage(stoi(nodeLine[0]));
-		WebPage destination = WebPage(stoi(nodeLine[0]));
-		graph.addArc(source, destination);
+		// If the line has the correct format (not empty, enough arguments...)
+		if (nodeLine.size() > 1) {
+			WebPage source = WebPage(stoi(nodeLine[0]));
+			WebPage destination = WebPage(stoi(nodeLine[1]));
+			graph.addArc(source, destination);
+			//cout << "Arc : " << stoi(nodeLine[0]) << " => " << stoi(nodeLine[1]) << endl;
+		}
 	}
 	cout << " Done." << endl;
 

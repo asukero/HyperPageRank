@@ -9,8 +9,8 @@
 
 
 int main() {
-	/*
-	std::cout << "------------------------- Tests Noeuds -------------------------" << std::endl;
+	
+	/*std::cout << "------------------------- Tests Noeuds -------------------------" << std::endl;
 	std::string s1 = "Noeud1";
 	Node<std::string> n1(s1);
 	std::cout << n1 << std::endl;
@@ -176,12 +176,24 @@ int main() {
 	std::cout << HID1 << std::endl;
 	PageRank HID2 = computer.computeHyperIndegree(hyperGraph2);
 	std::cout << HID2 << std::endl;
-	std::cout << "----------------------------------------------------------------" << std::endl;
-	*/
+	std::cout << "----------------------------------------------------------------" << std::endl;*/
+	Graph<WebPage> graphe;
+	WebPage p0(0);
+	WebPage p1(1);
+	WebPage p2(2);
+	WebPage p3(3);
+	graphe.addNode(p0);
+	graphe.addNode(p1);
+	graphe.addNode(p2);
+	graphe.addNode(p3);
+	graphe.addArc(p0, p1);
+	graphe.addArc(p1, p2);
+	graphe.addArc(p0, p2);
+	graphe.addArc(p2, p0);
+	graphe.addArc(p3, p2);
 	//COMMANDLINE PROCESSOR
 	CommandLineProcessor cmd;
 	cmd.run();
-	
 	system("PAUSE");
 	return EXIT_SUCCESS;
 }

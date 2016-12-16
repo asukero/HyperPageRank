@@ -3,12 +3,12 @@
 
 class CommandLineProcessor
 {
-private:
+/*private:
 	PageRankComputer pageRankComputer;
 	Graph<WebPage> webGraph;
-	Hypergraph<WebPage> webHypergraph;
+	Hypergraph<WebPage> webHypergraph;*/
 public:
 	void run();
 	static void displayCommands();
-	void readCommand() const;
+	void readCommand(Graph<WebPage> & webGraph, Hypergraph<WebPage> & webHypergraph, PageRankComputer & pageRankComputer) const;
 };

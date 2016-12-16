@@ -6,6 +6,9 @@ using namespace std;
 
 void CommandLineProcessor::run()
 {
+	PageRankComputer pageRankComputer;
+	Graph<WebPage> webGraph;
+	Hypergraph<WebPage> webHypergraph;
 	cout << "\tCalcul du PageRank\n" << endl;
 	cout << "Vous devez avoir deux fichiers .txt, le premier pour les noeuds du graphe, le deuxième pour les arcs.\n" << endl;
 	cout << "Entrez le nom du fichier contenant les noeuds : " << endl;
@@ -17,14 +20,16 @@ void CommandLineProcessor::run()
 	cout << "Entrez le nom du fichier contenant les arcs : " << endl;
 	cin >> edgeFileName;
 	bool fileFound = false;
-
+	
 	while (!fileFound)
 	{
+		
 		try
 		{
 			cout << "Creation du graphe simple..." << endl;
 			webGraph = pageRankComputer.loadGraph(nodeFileName, edgeFileName);
 			cout << "Creation de l'hypergraphe..." << endl;
+			// Possible to change it for a pointer, avoiding the copy problem explained in PageRankComputer
 			//webHypergraph = pageRankComputer.loadHypergraph(nodeFileName, edgeFileName);
 			fileFound = true;
 		}
@@ -42,7 +47,8 @@ void CommandLineProcessor::run()
 	}
 
 	displayCommands();
-	readCommand();
+	cin.ignore();
+	readCommand(webGraph, webHypergraph, pageRankComputer);
 }
 
 void CommandLineProcessor::displayCommands()
@@ -55,24 +61,26 @@ void CommandLineProcessor::displayCommands()
 	cout << "- quitter : quitte le programme.\n" << endl;
 }
 
-void CommandLineProcessor::readCommand() const
+void CommandLineProcessor::readCommand(Graph<WebPage> & webGraph, Hypergraph<WebPage> & webHypergraph, PageRankComputer & pageRankComputer) const
 {
 	cout << "commande : ";
 	string command;
 	getline(cin, command);
-
+	PageRank pageRank;
+	PageRank hyperPageRank;
 	if (command == "help" || command == "?")
 	{
 		displayCommands();
-
 	}
 	else if (command == "pagerank")
 	{
-		//pageRankComputer.computePageRank(webGraph, true);
+		pageRank = pageRankComputer.computePageRank(webGraph, true);
+		cout << "PageRank : " << endl << pageRank << endl;
 	}
 	else if (command == "hyperpagerank")
 	{
-		//pageRankComputer.computeHyperPageRank(webHypergraph, true);
+		//hyperPageRank = pageRankComputer.computeHyperPageRank(webHypergraph, true);
+		//cout << "HyperPageRank : " << endl << hyperPageRank << endl;
 	}
 	else if (command == "recherche")
 	{
@@ -87,5 +95,5 @@ void CommandLineProcessor::readCommand() const
 	{
 		cout << "commande non trouvee, veuillez reessayer ou entrez 'help' ou '?' pour afficher la liste des commandes" << endl;
 	}
-	readCommand();
+	readCommand(webGraph, webHypergraph, pageRankComputer);
 }
