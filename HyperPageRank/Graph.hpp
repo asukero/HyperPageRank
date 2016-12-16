@@ -21,12 +21,12 @@ public:
 	// Destructor
 	~Graph();
 	// Creates and adds a node to the graph from its content, returns its position in the list
-	long addNode(const T & content);
+	long addNode(T & content);
 	// Adds an arc from the content of two nodes, returns the position of the first node in the list,
 	// -1 if the arc could not be created
-	long addArc(const T & originContent, const T & destinationContent);
+	long addArc(T & originContent, T & destinationContent);
 	// Searches a node according to its content, returns its index if found, else -1
-	long searchNode(const T & content);
+	long searchNode(T & content);
 	// Returns a reference to the index list of the nodes pointed by the one with the index given as parameter
 	IndexList & getPointedNodes(const long & index);
 	// Returns a reference to the node list
@@ -50,13 +50,13 @@ Graph<T>::~Graph() {
 }
 
 template<typename T>
-long Graph<T>::addNode(const T & content) {
+long Graph<T>::addNode(T & content) {
 	nodeList.emplace_back(content);
 	return nodeList.size() - 1;
 }
 
 template<typename T>
-long Graph<T>::addArc(const T & originContent, const T & destinationContent) {
+long Graph<T>::addArc(T & originContent, T & destinationContent) {
 	// Search the nodes in the list
 	long originIndex = this->searchNode(originContent);
 	long destinationIndex = this->searchNode(destinationContent);
@@ -69,7 +69,7 @@ long Graph<T>::addArc(const T & originContent, const T & destinationContent) {
 }
 
 template<typename T>
-long Graph<T>::searchNode(const T & content) {
+long Graph<T>::searchNode(T & content) {
 	long index = -1;
 	for (long i = 0; i < this->nodeList.size(); i++) {
 		// If the node has the good content

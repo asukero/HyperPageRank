@@ -17,13 +17,13 @@ public:
 	// Destructor
 	~Hypergraph();
 	// Creates and adds a node to the graph from its content, returns its position in the list
-	long addNode(const T & content);
+	long addNode(T & content);
 	// Creates an hyperarc between two given nodes
-	long addHyperArc(const T & originContent, const T & destinationContent);
+	long addHyperArc(T & originContent, T & destinationContent);
 	// Add a node to the origin or destination set of an hyperarc, from its index
-	long addNodeToHyperArc(const long & arcIndex, const T & nodeContent, bool origin);
+	long addNodeToHyperArc(const long & arcIndex, T & nodeContent, bool origin);
 	// Searches a node according to its content, returns its index if found, else -1
-	long searchNode(const T & content);
+	long searchNode(T & content);
 	// Returns the index list of the nodes pointed by the hyperarc, given its index in the matrix
 	IndexList getPointedNodes(const long & index);
 	// Returns the index list of the origin nodes of the hyperarc, given its index in the matrix
@@ -49,7 +49,7 @@ Hypergraph<T>::~Hypergraph() {
 }
 
 template<typename T>
-long Hypergraph<T>::addNode(const T & content) {
+long Hypergraph<T>::addNode(T & content) {
 	// Adds the node to the node list
 	this->nodeList.emplace_back(content);
 	// Adds the node to the hyperarc matrix <=> adds a row
@@ -59,7 +59,7 @@ long Hypergraph<T>::addNode(const T & content) {
 }
 
 template<typename T>
-long Hypergraph<T>::addHyperArc(const T & originContent, const T & destinationContent) {
+long Hypergraph<T>::addHyperArc(T & originContent, T & destinationContent) {
 	// Search the nodes in the list
 	long originIndex = this->searchNode(originContent);
 	long destinationIndex = this->searchNode(destinationContent);
@@ -76,7 +76,7 @@ long Hypergraph<T>::addHyperArc(const T & originContent, const T & destinationCo
 }
 
 template<typename T>
-long Hypergraph<T>::addNodeToHyperArc(const long & arcIndex, const T & nodeContent, bool origin) {
+long Hypergraph<T>::addNodeToHyperArc(const long & arcIndex, T & nodeContent, bool origin) {
 	int value = 1;
 	if (origin) { value = -1; }
 	// Search the node in the list
@@ -90,7 +90,7 @@ long Hypergraph<T>::addNodeToHyperArc(const long & arcIndex, const T & nodeConte
 }
 
 template<typename T>
-long Hypergraph<T>::searchNode(const T & content) {
+long Hypergraph<T>::searchNode(T & content) {
 	long index = -1;
 	for (long i = 0; i < this->nodeList.size(); i++) {
 		// If the node has the good content

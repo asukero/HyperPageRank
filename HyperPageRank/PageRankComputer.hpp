@@ -20,15 +20,19 @@ public:
 	// Loads an graph from a file
 	Graph<WebPage> loadGraph(const std::string & nodeFilename, const std::string & edgeFilename);
 	// Loads an hypergraph from a graph
-	Hypergraph<WebPage> loadHypergraph(const std::string & nodeFilename, const std::string & edgeFilename);
+
+	// WARNING : Unique_ptr error : it is not possible to return a copy of an hypergraph created in the function, because
+	// this hypegraph contains a matrix using unique_ptr which can't be copied, causing the error
+	// Hypergraph<WebPage> loadHypergraph(const std::string & nodeFilename, const std::string & edgeFilename);
+	
 	// Calculates the PageRank of a graph
-	PageRank computePageRank(Graph<std::string> & graph, const bool articleVersion);
+	PageRank computePageRank(Graph<WebPage> & graph, const bool articleVersion);
 	// Calculates the pageRank of an hypergraph
-	PageRank computeHyperPageRank(Hypergraph<std::string> & hypergraph);
+	PageRank computeHyperPageRank(Hypergraph<WebPage> & hypergraph);
 	// Applies the Indegree algorithm on a graph
-	PageRank computeIndegree(Graph<std::string> & graph);
+	PageRank computeIndegree(Graph<WebPage> & graph);
 	// Applies the Indegree algorithm on a hypergraph
-	PageRank computeHyperIndegree(Hypergraph<std::string> & hypergraph);
+	PageRank computeHyperIndegree(Hypergraph<WebPage> & hypergraph);
 };
 
 std::ostream & operator<<(std::ostream & flux, PageRank & pageRank);

@@ -9,6 +9,7 @@
 
 
 int main() {
+	/*
 	std::cout << "------------------------- Tests Noeuds -------------------------" << std::endl;
 	std::string s1 = "Noeud1";
 	Node<std::string> n1(s1);
@@ -176,11 +177,11 @@ int main() {
 	PageRank HID2 = computer.computeHyperIndegree(hyperGraph2);
 	std::cout << HID2 << std::endl;
 	std::cout << "----------------------------------------------------------------" << std::endl;
-
+	*/
 	//COMMANDLINE PROCESSOR
 	CommandLineProcessor cmd;
-	//cmd.run();
-
+	cmd.run();
+	
 	system("PAUSE");
 	return EXIT_SUCCESS;
 }

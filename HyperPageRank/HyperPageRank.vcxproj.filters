@@ -27,11 +27,11 @@
     <ClCompile Include="CommandLineProcessor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WebPage.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="URL.cpp">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WebPage.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,10 +56,10 @@
     <ClInclude Include="CommandLineProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WebPage.h">
+    <ClInclude Include="URL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="URL.h">
+    <ClInclude Include="WebPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

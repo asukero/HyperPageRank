@@ -11,3 +11,5 @@ public:
 	static URL Parse(const wstring url);
 	wstring QueryString, Path, Protocol, Host, Port, Domain;
 };
+
+std::ostream & operator<<(std::ostream & flux, URL & url);

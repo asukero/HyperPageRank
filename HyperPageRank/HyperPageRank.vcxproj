@@ -114,6 +114,8 @@
     <ClCompile Include="IndexOutOfBoundsException.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PageRankComputer.cpp" />
+    <ClCompile Include="URL.cpp" />
+    <ClCompile Include="WebPage.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLineProcessor.h" />
@@ -123,6 +125,8 @@
     <ClInclude Include="Matrix.hpp" />
     <ClInclude Include="Node.hpp" />
     <ClInclude Include="PageRankComputer.hpp" />
+    <ClInclude Include="URL.h" />
+    <ClInclude Include="WebPage.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

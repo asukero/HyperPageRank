@@ -10,6 +10,10 @@ URL::URL(string url)
 	this->Parse(wstring);
 }
 
+URL::URL()
+{
+}
+
 URL::URL(wstring url)
 {
 	this->Parse(url);
@@ -69,4 +73,11 @@ URL URL::Parse(const wstring url)
 		result.QueryString = wstring(queryStart, url.end());
 
 	return result;
+}
+
+std::ostream & operator<<(std::ostream & flux, URL & url)
+{
+	// TODO
+	flux << "SHOULD BE THE URL TEXT";
+	return flux;
 }

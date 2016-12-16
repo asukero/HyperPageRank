@@ -48,7 +48,7 @@ Graph<WebPage> PageRankComputer::loadGraph(const std::string & nodeFilename, con
 		string line;
 		getline(inNodefile, line);
 		vector<string> nodeLine = this->_split(line, ' ');
-		WebPage page = WebPage(stoi(nodeLine[0]), URL(nodeLine[2]));
+		WebPage page = WebPage(URL(nodeLine[2]), stoi(nodeLine[0]));
 		graph.addNode(page);
 	}
 	cout << " Done." << endl;
@@ -65,7 +65,7 @@ Graph<WebPage> PageRankComputer::loadGraph(const std::string & nodeFilename, con
 		vector<string> nodeLine = this->_split(line, ' ');
 		WebPage source = WebPage(stoi(nodeLine[0]));
 		WebPage destination = WebPage(stoi(nodeLine[0]));
-		graph.addArc(source.getId(), destination.getId());
+		graph.addArc(source, destination);
 	}
 	cout << " Done." << endl;
 
@@ -84,11 +84,12 @@ vector<string> PageRankComputer::_split(const string &s, char delim) const
 	return result;
 }
 
-Hypergraph<WebPage> PageRankComputer::loadHypergraph(const std::string & nodeFilename, const std::string & edgeFilename) {
+// WARNING : read the explanation of the error in the hpp file
+/*Hypergraph<WebPage> PageRankComputer::loadHypergraph(const std::string & nodeFilename, const std::string & edgeFilename) {
 	return Hypergraph<WebPage>();
-}
+}*/
 
-PageRank PageRankComputer::computePageRank(Graph<std::string> & graph, const bool articleVersion) {
+PageRank PageRankComputer::computePageRank(Graph<WebPage> & graph, const bool articleVersion) {
 	PageRank pageRank;
 	PageRank futurePageRank;
 	// c is the dampening factor
@@ -129,7 +130,7 @@ PageRank PageRankComputer::computePageRank(Graph<std::string> & graph, const boo
 	return pageRank;
 }
 
-PageRank PageRankComputer::computeHyperPageRank(Hypergraph<std::string> & hypergraph) {
+PageRank PageRankComputer::computeHyperPageRank(Hypergraph<WebPage> & hypergraph) {
 	PageRank pageRank;
 	PageRank futurePageRank;
 	PageRank blockRank;
@@ -185,7 +186,7 @@ PageRank PageRankComputer::computeHyperPageRank(Hypergraph<std::string> & hyperg
 	return pageRank;
 }
 
-PageRank PageRankComputer::computeIndegree(Graph<std::string>& graph) {
+PageRank PageRankComputer::computeIndegree(Graph<WebPage>& graph) {
 	PageRank indegree;
 	indegree.clear();
 	long nbPages = graph.getNodeList().size();
@@ -204,7 +205,7 @@ PageRank PageRankComputer::computeIndegree(Graph<std::string>& graph) {
 	return indegree;
 }
 
-PageRank PageRankComputer::computeHyperIndegree(Hypergraph<std::string>& hypergraph) {
+PageRank PageRankComputer::computeHyperIndegree(Hypergraph<WebPage>& hypergraph) {
 	long nbPages = hypergraph.getNodeList().size();
 	long nbBlocks = hypergraph.getHyperarcMatrix().getNbColumns();
 	PageRank blockRank(nbBlocks);

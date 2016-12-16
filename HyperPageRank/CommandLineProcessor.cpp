@@ -25,7 +25,7 @@ void CommandLineProcessor::run()
 			cout << "Creation du graphe simple..." << endl;
 			webGraph = pageRankComputer.loadGraph(nodeFileName, edgeFileName);
 			cout << "Creation de l'hypergraphe..." << endl;
-			webHypergraph = pageRankComputer.loadHypergraph(nodeFileName, edgeFileName);
+			//webHypergraph = pageRankComputer.loadHypergraph(nodeFileName, edgeFileName);
 			fileFound = true;
 		}
 		catch (...)
