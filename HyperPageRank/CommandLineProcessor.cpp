@@ -26,9 +26,11 @@ void CommandLineProcessor::run()
 		
 		try
 		{
-			cout << "Creation du graphe simple..." << endl;
-			webGraph = pageRankComputer.loadGraph(nodeFileName, edgeFileName);
-			cout << "Creation de l'hypergraphe..." << endl;
+			cout << "Creation du graphe simple et de l'hypergraphe..." << endl;
+			pageRankComputer.loadGraphAndHypergraph(webGraph, webHypergraph, nodeFileName, edgeFileName);
+			//cout << "Creation du graphe simple..." << endl;
+			//webGraph = pageRankComputer.loadGraph(nodeFileName, edgeFileName);
+			//cout << "Creation de l'hypergraphe..." << endl;
 			// Possible to change it for a pointer, avoiding the copy problem explained in PageRankComputer
 			//webHypergraph = pageRankComputer.loadHypergraph(nodeFileName, edgeFileName);
 			fileFound = true;

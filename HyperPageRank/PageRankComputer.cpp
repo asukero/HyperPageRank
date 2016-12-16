@@ -32,6 +32,72 @@ PageRankComputer::PageRankComputer() {
 PageRankComputer::~PageRankComputer() {
 }
 
+void PageRankComputer::loadGraphAndHypergraph(Graph<WebPage>& graph, Hypergraph<WebPage>& hypergraph, const std::string & nodeFilename, const std::string & edgeFilename) {
+	// Mapping nodeID => <realID(graph) ; domainName>
+	std::unordered_map<long, std::pair<long, std::wstring>> nodeMapping;
+	// Mapping domainName => hyperarcID
+	std::unordered_map<std::wstring, long> domainMapping;
+	
+	ifstream inNodefile(nodeFilename);
+	ifstream inEdgefile(edgeFilename);
+	cout << "Reading Nodes...";
+	string dummyLine;
+	//skipping first lines
+	getline(inNodefile, dummyLine);
+
+	while (inNodefile)
+	{
+		string line;
+		getline(inNodefile, line);
+		vector<string> nodeLine = this->_split(line, ' ');
+		// If the line has the correct format (not empty, enough arguments...)
+		if (nodeLine.size() > 2) {
+			URL url((nodeLine[2]));
+			int nodeId = stoi(nodeLine[0]);
+			// Creates the web page
+			WebPage page = WebPage(url, nodeId);
+			// Adds it to the graph and the hypergraph
+			long realID = graph.addNode(page);
+			realID = hypergraph.addNode(page);
+			std::pair<long, std::wstring> pair = std::make_pair(realID, url.Domain);
+			// Adds the node to the mapping
+			nodeMapping.insert(std::pair<long, std::pair<long, std::wstring>>(nodeId, pair));
+		}
+	}
+	cout << " Done." << endl;
+
+	cout << "Reading Edges...";
+
+	//skipping first lines
+	getline(inEdgefile, dummyLine);
+
+	while (inEdgefile)
+	{
+		string line;
+		getline(inEdgefile, line);
+		vector<string> nodeLine = this->_split(line, ' ');
+		// If the line has the correct format (not empty, enough arguments...)
+		if (nodeLine.size() > 1) {
+			int sourceId = stoi(nodeLine[0]);
+			int destinationId = stoi(nodeLine[1]);
+			try {
+				long realSourceId = nodeMapping.at(sourceId).first;
+				long realDestinationId = nodeMapping.at(destinationId).first;
+				wstring domainName = nodeMapping.at(sourceId).second;
+				// ********** GRAPH PART **********
+				graph.addArc(realSourceId, realDestinationId);
+				// ********************************
+				// ******** HYPERGRAPH PART *******
+
+				// ********************************
+			// If one of the two nodes does not exist (ie its id is not present in the mapping) ...
+			} catch (...) {}
+		}
+	}
+	cout << " Done." << endl;
+
+}
+
 Graph<WebPage> PageRankComputer::loadGraph(const std::string & nodeFilename, const std::string & edgeFilename) {
 	ifstream inNodefile(nodeFilename);
 	ifstream inEdgefile(edgeFilename);

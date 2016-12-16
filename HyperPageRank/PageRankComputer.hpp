@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <utility>
 #include "Graph.hpp"
 #include "Hypergraph.hpp"
 #include "WebPage.h"
@@ -17,10 +19,12 @@ public:
 	PageRankComputer();
 	// Destructor
 	~PageRankComputer();
+	// Loads a graph and an hypergraph from a file
+	void loadGraphAndHypergraph(Graph<WebPage> & graph, Hypergraph<WebPage> & hypergraph, const std::string & nodeFilename, const std::string & edgeFilename);
+
 	// Loads an graph from a file
 	Graph<WebPage> loadGraph(const std::string & nodeFilename, const std::string & edgeFilename);
 	// Loads an hypergraph from a graph
-
 	// WARNING : Unique_ptr error : it is not possible to return a copy of an hypergraph created in the function, because
 	// this hypegraph contains a matrix using unique_ptr which can't be copied, causing the error
 	// Hypergraph<WebPage> loadHypergraph(const std::string & nodeFilename, const std::string & edgeFilename);
