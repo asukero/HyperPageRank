@@ -186,11 +186,30 @@ int main() {
 	graphe.addNode(p1);
 	graphe.addNode(p2);
 	graphe.addNode(p3);
-	graphe.addArc(p0, p1);
+	/*graphe.addArc(p0, p1);
 	graphe.addArc(p1, p2);
 	graphe.addArc(p0, p2);
 	graphe.addArc(p2, p0);
-	graphe.addArc(p3, p2);
+	graphe.addArc(p3, p2);*/
+	graphe.addArc(0, 1);
+	graphe.addArc(0, 2);
+	graphe.addArc(1, 2);
+	graphe.addArc(2, 0);
+	graphe.addArc(3, 2);
+	Hypergraph<WebPage> hypergraph;
+	WebPage p4(4);
+	WebPage p5(5);
+	hypergraph.addNode(p1);
+	hypergraph.addNode(p2);
+	hypergraph.addNode(p3);
+	hypergraph.addNode(p4);
+	hypergraph.addNode(p5);
+	long indHA1 = hypergraph.addHyperArc(0, 1);
+	long indHA2 = hypergraph.addHyperArc(1, 4);
+	long indHA3 = hypergraph.addHyperArc(3, 1);
+	hypergraph.addNodeToHyperArc(indHA1, 2, true);
+	hypergraph.addNodeToHyperArc(indHA3, 4, true);
+	hypergraph.getHyperarcMatrix().display();
 	//COMMANDLINE PROCESSOR
 	CommandLineProcessor cmd;
 	cmd.run();

@@ -25,6 +25,9 @@ public:
 	// Adds an arc from the content of two nodes, returns the position of the first node in the list,
 	// -1 if the arc could not be created
 	long addArc(T & originContent, T & destinationContent);
+	// Adds an arc from the indexes of two nodes, returns the position of the first node in the list,
+	// -1 if the arc could not be created
+	long addArc(const long & originIndex, const long & destinationIndex);
 	// Searches a node according to its content, returns its index if found, else -1
 	long searchNode(T & content);
 	// Returns a reference to the index list of the nodes pointed by the one with the index given as parameter
@@ -62,6 +65,16 @@ long Graph<T>::addArc(T & originContent, T & destinationContent) {
 	long destinationIndex = this->searchNode(destinationContent);
 	// Creates the arc, adds it to the adjacency list
 	if (originIndex != -1 && destinationIndex != -1) {
+		this->arcList[originIndex].push_back(destinationIndex);
+		return originIndex;
+	}
+	return -1;
+}
+
+template<typename T>
+long Graph<T>::addArc(const long & originIndex, const long & destinationIndex) {
+	// Creates the arc if the given indexes are correct
+	if (originIndex >= 0 && destinationIndex >= 0 && originIndex < this->nodeList.size() && destinationIndex < this->nodeList.size()) {
 		this->arcList[originIndex].push_back(destinationIndex);
 		return originIndex;
 	}
