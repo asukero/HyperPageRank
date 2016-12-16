@@ -83,12 +83,33 @@ void PageRankComputer::loadGraphAndHypergraph(Graph<WebPage>& graph, Hypergraph<
 			try {
 				long realSourceId = nodeMapping.at(sourceId).first;
 				long realDestinationId = nodeMapping.at(destinationId).first;
-				wstring domainName = nodeMapping.at(sourceId).second;
+				wstring sourceDomainName = nodeMapping.at(sourceId).second;
+				wstring destinationDomainName = nodeMapping.at(destinationId).second;
 				// ********** GRAPH PART **********
 				graph.addArc(realSourceId, realDestinationId);
 				// ********************************
 				// ******** HYPERGRAPH PART *******
-
+				// If the two pages are from the same domain, they must not be linked, but a arc must be created
+				// where both pages are source
+				bool bothOrigins = false;
+				long hyperArcIndex;
+				if (sourceDomainName == destinationDomainName) {
+					bothOrigins = true;
+				}
+				// Verifies if the domain name of the source already exists in the domain mapping
+				bool alreadyExisting = domainMapping.find(sourceDomainName) != domainMapping.end();
+				// If it does exist, the destination node must be added to the pointing nodes of the existing hyperarc,
+				// using its index
+				if (alreadyExisting) {
+					hyperArcIndex = domainMapping.at(sourceDomainName);
+					hypergraph.addNodeToHyperArc(hyperArcIndex, realDestinationId, bothOrigins);
+				}
+				// If the domain name is not present in the mapping, a new hyperarc must be created, 
+				// and its index added to the mapping
+				else {
+					hyperArcIndex = hypergraph.addHyperArc(realSourceId, realDestinationId, bothOrigins);
+					domainMapping.insert(std::pair<wstring, long>(sourceDomainName, hyperArcIndex));
+				}
 				// ********************************
 			// If one of the two nodes does not exist (ie its id is not present in the mapping) ...
 			} catch (...) {}

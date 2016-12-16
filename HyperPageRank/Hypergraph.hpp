@@ -19,9 +19,9 @@ public:
 	// Creates and adds a node to the graph from its content, returns its position in the list
 	long addNode(T & content);
 	// Creates an hyperarc between two given nodes, returns its index (ie the column of the matrix)
-	long addHyperArc(T & originContent, T & destinationContent);
+	long addHyperArc(T & originContent, T & destinationContent, bool bothOrigins);
 	// Creates an hyperarc between two nodes, using their index, returns the arc index (ie the column of the matrix)
-	long addHyperArc(const long & originIndex, const long & destinationIndex);
+	long addHyperArc(const long & originIndex, const long & destinationIndex, bool bothOrigins);
 	// Adds a node to the origin or destination set of an hyperarc, from its index and the content of the node
 	long addNodeToHyperArc(const long & arcIndex, T & nodeContent, bool origin);
 	// Adds a node to the origin or destination set of an hyperarc, from its index and the index of the node
@@ -63,7 +63,7 @@ long Hypergraph<T>::addNode(T & content) {
 }
 
 template<typename T>
-long Hypergraph<T>::addHyperArc(T & originContent, T & destinationContent) {
+long Hypergraph<T>::addHyperArc(T & originContent, T & destinationContent, bool bothOrigins) {
 	// Search the nodes in the list
 	long originIndex = this->searchNode(originContent);
 	long destinationIndex = this->searchNode(destinationContent);
@@ -73,21 +73,25 @@ long Hypergraph<T>::addHyperArc(T & originContent, T & destinationContent) {
 		this->hyperarcMatrix.addColumn(hyperarcIndex);
 		// Sets the values in the matrix : 1 <=> node is pointed ; -1 <=> node is the origin of an hyperarc
 		this->hyperarcMatrix.setValue(originIndex, hyperarcIndex, -1); 
-		this->hyperarcMatrix.setValue(destinationIndex, hyperarcIndex, 1);
+		int destinationValue = 1;
+		if (bothOrigins) {destinationValue = -1;}
+		this->hyperarcMatrix.setValue(destinationIndex, hyperarcIndex, destinationValue);
 		return hyperarcIndex;
 	}
 	return -1;
 }
 
 template<typename T>
-long Hypergraph<T>::addHyperArc(const long & originIndex, const long & destinationIndex) {
+long Hypergraph<T>::addHyperArc(const long & originIndex, const long & destinationIndex, bool bothOrigins) {
 	// Creates the hyperarc, adds it to the list
 	if (originIndex >= 0 && destinationIndex >= 0 && originIndex < this->hyperarcMatrix.getNbRows() && destinationIndex < this->hyperarcMatrix.getNbRows()) {
 		long hyperarcIndex = this->hyperarcMatrix.getNbColumns();
 		this->hyperarcMatrix.addColumn(hyperarcIndex);
 		// Sets the values in the matrix : 1 <=> node is pointed ; -1 <=> node is the origin of an hyperarc
 		this->hyperarcMatrix.setValue(originIndex, hyperarcIndex, -1);
-		this->hyperarcMatrix.setValue(destinationIndex, hyperarcIndex, 1);
+		int destinationValue = 1;
+		if (bothOrigins) { destinationValue = -1; }
+		this->hyperarcMatrix.setValue(destinationIndex, hyperarcIndex, destinationValue);
 		return hyperarcIndex;
 	}
 	return -1;

@@ -204,11 +204,16 @@ int main() {
 	hypergraph.addNode(p3);
 	hypergraph.addNode(p4);
 	hypergraph.addNode(p5);
-	long indHA1 = hypergraph.addHyperArc(0, 1);
-	long indHA2 = hypergraph.addHyperArc(1, 4);
-	long indHA3 = hypergraph.addHyperArc(3, 1);
+	/*long indHA1 = hypergraph.addHyperArc(0, 1, false);
+	long indHA2 = hypergraph.addHyperArc(1, 4, false);
+	long indHA3 = hypergraph.addHyperArc(3, 1, false);
 	hypergraph.addNodeToHyperArc(indHA1, 2, true);
-	hypergraph.addNodeToHyperArc(indHA3, 4, true);
+	hypergraph.addNodeToHyperArc(indHA3, 4, true);*/
+	long indHA1 = hypergraph.addHyperArc(0, 2, true);
+	long indHA2 = hypergraph.addHyperArc(3, 4, true);
+	long indHA3 = hypergraph.addHyperArc(1, 4, false);
+	hypergraph.addNodeToHyperArc(indHA1, 1, false);
+	hypergraph.addNodeToHyperArc(indHA2, 1, false);
 	hypergraph.getHyperarcMatrix().display();
 	//COMMANDLINE PROCESSOR
 	CommandLineProcessor cmd;
