@@ -18,10 +18,14 @@ public:
 	~Hypergraph();
 	// Creates and adds a node to the graph from its content, returns its position in the list
 	long addNode(T & content);
-	// Creates an hyperarc between two given nodes
+	// Creates an hyperarc between two given nodes, returns its index (ie the column of the matrix)
 	long addHyperArc(T & originContent, T & destinationContent);
-	// Add a node to the origin or destination set of an hyperarc, from its index
+	// Creates an hyperarc between two nodes, using their index, returns the arc index (ie the column of the matrix)
+	long addHyperArc(const long & originIndex, const long & destinationIndex);
+	// Adds a node to the origin or destination set of an hyperarc, from its index and the content of the node
 	long addNodeToHyperArc(const long & arcIndex, T & nodeContent, bool origin);
+	// Adds a node to the origin or destination set of an hyperarc, from its index and the index of the node
+	long addNodeToHyperArc(const long & arcIndex, const long & nodeIndex, bool origin);
 	// Searches a node according to its content, returns its index if found, else -1
 	long searchNode(T & content);
 	// Returns the index list of the nodes pointed by the hyperarc, given its index in the matrix
@@ -76,13 +80,39 @@ long Hypergraph<T>::addHyperArc(T & originContent, T & destinationContent) {
 }
 
 template<typename T>
+long Hypergraph<T>::addHyperArc(const long & originIndex, const long & destinationIndex) {
+	// Creates the hyperarc, adds it to the list
+	if (originIndex >= 0 && destinationIndex >= 0 && originIndex < this->hyperarcMatrix.getNbRows() && destinationIndex < this->hyperarcMatrix.getNbRows()) {
+		long hyperarcIndex = this->hyperarcMatrix.getNbColumns();
+		this->hyperarcMatrix.addColumn(hyperarcIndex);
+		// Sets the values in the matrix : 1 <=> node is pointed ; -1 <=> node is the origin of an hyperarc
+		this->hyperarcMatrix.setValue(originIndex, hyperarcIndex, -1);
+		this->hyperarcMatrix.setValue(destinationIndex, hyperarcIndex, 1);
+		return hyperarcIndex;
+	}
+	return -1;
+}
+
+template<typename T>
 long Hypergraph<T>::addNodeToHyperArc(const long & arcIndex, T & nodeContent, bool origin) {
 	int value = 1;
 	if (origin) { value = -1; }
 	// Search the node in the list
 	long nodeIndex = this->searchNode(nodeContent);
-	// If the node exist, and an hyperarc is already present in the matrix at the given index
-	if (nodeIndex != -1 && arcIndex < this->hyperarcMatrix.getNbColumns()) {
+	// If the node exists, and an hyperarc is already present in the matrix at the given index
+	if (nodeIndex != -1 && arcIndex >= 0 && arcIndex < this->hyperarcMatrix.getNbColumns()) {
+		this->hyperarcMatrix.setValue(nodeIndex, arcIndex, value);
+		return arcIndex;
+	}
+	return -1;
+}
+
+template<typename T>
+long Hypergraph<T>::addNodeToHyperArc(const long & arcIndex, const long & nodeIndex, bool origin) {
+	int value = 1;
+	if (origin) { value = -1; }
+	// If the node index is correct, and an hyperarc is already present in the matrix at the given index
+	if (nodeIndex >= 0 && arcIndex >= 0 && nodeIndex < this->hyperarcMatrix.getNbRows() && arcIndex < this->hyperarcMatrix.getNbColumns()) {
 		this->hyperarcMatrix.setValue(nodeIndex, arcIndex, value);
 		return arcIndex;
 	}
