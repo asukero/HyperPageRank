@@ -6,8 +6,7 @@ using namespace std;
 URL::URL(string url)
 {
 	wstring_convert<codecvt_utf8_utf16<wchar_t>> converter;
-	wstring wstring = converter.from_bytes(url);
-	this->Parse(wstring);
+	this->Parse(converter.from_bytes(url));
 }
 
 URL::URL()
@@ -19,14 +18,13 @@ URL::URL(wstring url)
 	this->Parse(url);
 }
 
-URL URL::Parse(const wstring url)
+void URL::Parse(const wstring url)
 {
-	URL result;
 
 	typedef wstring::const_iterator iterator_t;
 
 	if (url.length() == 0)
-		return result;
+		return;
 
 	iterator_t urlEnd = url.end();
 
@@ -42,7 +40,7 @@ URL URL::Parse(const wstring url)
 		wstring prot = &*(protocolEnd);
 		if ((prot.length() > 3) && (prot.substr(0, 3) == L"://"))
 		{
-			result.Protocol = wstring(protocolStart, protocolEnd);
+			this->Protocol = wstring(protocolStart, protocolEnd);
 			protocolEnd += 3;
 		}
 		else protocolEnd = url.begin();
@@ -57,28 +55,28 @@ URL URL::Parse(const wstring url)
 		(pathStart != urlEnd) ? pathStart : queryStart,
 		L':');
 
-	result.Host = wstring(hostStart, hostEnd);
+	this->Host = wstring(hostStart, hostEnd);
 
 	iterator_t realHostBegin;
 	iterator_t realHostEnd;
 	wstring realHost;
 
-	if (result.Host.find(L"www.") == 0)
+	if (this->Host.find(L"www.") == 0)
 	{
-		realHost = result.Host.erase(0, 4);
+		realHost = this->Host.erase(0, 4);
 		realHostBegin = realHost.begin();
 		realHostEnd = realHost.end();
 	}
 	else
 	{
-		realHost = result.Host;
+		realHost = this->Host;
 		realHostBegin = hostStart;
 		realHostEnd = hostEnd;
 	}
 
 	iterator_t domainStart = find(realHostBegin, realHostEnd, L'.');
 	++domainStart;
-	result.Domain = wstring(domainStart, realHostEnd);
+	this->Domain = wstring(domainStart, realHostEnd);
 
 
 
@@ -86,16 +84,15 @@ URL URL::Parse(const wstring url)
 	{
 		++hostEnd;
 		iterator_t portEnd = (pathStart != urlEnd) ? pathStart : queryStart;
-		result.Port = wstring(hostEnd, portEnd);
+		this->Port = wstring(hostEnd, portEnd);
 	}
 
 	if (pathStart != urlEnd)
-		result.Path = wstring(pathStart, queryStart);
+		this->Path = wstring(pathStart, queryStart);
 
 	if (queryStart != urlEnd)
-		result.QueryString = wstring(queryStart, url.end());
+		this->QueryString = wstring(queryStart, url.end());
 
-	return result;
 }
 
 std::ostream & operator<<(std::ostream & flux, URL & url)

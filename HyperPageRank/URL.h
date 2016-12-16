@@ -8,7 +8,7 @@ public:
 	URL();
 	URL(wstring url);
 	URL(string url);
-	static URL Parse(const wstring url);
+	void Parse(const wstring url);
 	wstring QueryString, Path, Protocol, Host, Port, Domain;
 };
 
