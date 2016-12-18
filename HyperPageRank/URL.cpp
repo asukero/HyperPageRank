@@ -1,6 +1,7 @@
 ﻿#include "URL.h"
 #include <locale>
 #include <codecvt>
+#include <iostream>
 using namespace std;
 
 URL::URL(string url)
@@ -95,9 +96,9 @@ void URL::Parse(const wstring url)
 
 }
 
-std::ostream & operator<<(std::ostream & flux, URL & url)
+std::wostream & operator<<(std::wostream & flux, URL & url)
 {
 	// TODO
-	flux << "SHOULD BE THE URL TEXT";
+	flux << url.Protocol << "://" << url.Host + url.Port + url.Path + url.QueryString;
 	return flux;
 }

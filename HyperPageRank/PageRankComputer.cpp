@@ -1,6 +1,7 @@
 #include "PageRankComputer.hpp"
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 // Computes the number of referenced pages in an hypergraph
 double getNbReferencedPages(Matrix<int> & matrix) {
@@ -40,11 +41,12 @@ void PageRankComputer::loadGraphAndHypergraph(Graph<WebPage>& graph, Hypergraph<
 	
 	ifstream inNodefile(nodeFilename);
 	ifstream inEdgefile(edgeFilename);
-	cout << "Reading Nodes...";
-	string dummyLine;
+	cout << "Reading Nodes..." << endl;
+	string dummyLine, totalLines;
+	getline(inNodefile, totalLines);
 	//skipping first lines
 	getline(inNodefile, dummyLine);
-
+	int lineNumber = -1;
 	while (inNodefile)
 	{
 		string line;
@@ -63,14 +65,17 @@ void PageRankComputer::loadGraphAndHypergraph(Graph<WebPage>& graph, Hypergraph<
 			// Adds the node to the mapping
 			nodeMapping.insert(std::pair<long, std::pair<long, std::wstring>>(nodeId, pair));
 		}
+		lineNumber++;
+		cout << "\tNodes processed: " << lineNumber << "/" << totalLines << '\r' << flush;
 	}
-	cout << " Done." << endl;
+	cout << "\nDone." << endl;
 
-	cout << "Reading Edges...";
+	cout << "Reading Edges..." << endl;
 
+	getline(inEdgefile, totalLines);
 	//skipping first lines
 	getline(inEdgefile, dummyLine);
-
+	lineNumber = -1;
 	while (inEdgefile)
 	{
 		string line;
@@ -114,56 +119,11 @@ void PageRankComputer::loadGraphAndHypergraph(Graph<WebPage>& graph, Hypergraph<
 			// If one of the two nodes does not exist (ie its id is not present in the mapping) ...
 			} catch (...) {}
 		}
+		lineNumber++;
+		cout << "\tEdges processed: " << lineNumber << "/" << totalLines << '\r' << flush;
 	}
-	cout << " Done." << endl;
+	cout << "\nDone." << endl;
 
-}
-
-Graph<WebPage> PageRankComputer::loadGraph(const std::string & nodeFilename, const std::string & edgeFilename) {
-	ifstream inNodefile(nodeFilename);
-	ifstream inEdgefile(edgeFilename);
-	
-	Graph<WebPage> graph;
-	cout << "Reading Nodes...";
-	string dummyLine;
-
-	//skipping first lines
-	getline(inNodefile, dummyLine);
-
-	while (inNodefile)
-	{
-		string line;
-		getline(inNodefile, line);
-		vector<string> nodeLine = this->_split(line, ' ');
-		// If the line has the correct format (not empty, enough arguments...)
-		if (nodeLine.size() > 2) {
-			WebPage page = WebPage(URL(nodeLine[2]), stoi(nodeLine[0]));
-			graph.addNode(page);
-		}
-	}
-	cout << " Done." << endl;
-
-	cout << "Reading Edges...";
-
-	//skipping first lines
-	getline(inEdgefile, dummyLine);
-
-	while (inEdgefile)
-	{
-		string line;
-		getline(inEdgefile, line);
-		vector<string> nodeLine = this->_split(line, ' ');
-		// If the line has the correct format (not empty, enough arguments...)
-		if (nodeLine.size() > 1) {
-			WebPage source = WebPage(stoi(nodeLine[0]));
-			WebPage destination = WebPage(stoi(nodeLine[1]));
-			graph.addArc(source, destination);
-			//cout << "Arc : " << stoi(nodeLine[0]) << " => " << stoi(nodeLine[1]) << endl;
-		}
-	}
-	cout << " Done." << endl;
-
-	return graph;
 }
 
 vector<string> PageRankComputer::_split(const string &s, char delim) const
@@ -178,27 +138,29 @@ vector<string> PageRankComputer::_split(const string &s, char delim) const
 	return result;
 }
 
-// WARNING : read the explanation of the error in the hpp file
-/*Hypergraph<WebPage> PageRankComputer::loadHypergraph(const std::string & nodeFilename, const std::string & edgeFilename) {
-	return Hypergraph<WebPage>();
-}*/
 
 PageRank PageRankComputer::computePageRank(Graph<WebPage> & graph, const bool articleVersion) {
 	PageRank pageRank;
 	PageRank futurePageRank;
 	// c is the dampening factor
 	double c = 0.15;
+	
 	pageRank.clear();
 	long nbPages = graph.getNodeList().size();
 	long i, j;
 	// All the pages are first initialized with a default pageRank
 	double initialValue = 1;
+	cout << "Initializing default pageRank on each page..." << endl;
 	for (i = 0; i < nbPages; i++) {
-		pageRank.push_back(initialValue);
-		futurePageRank.push_back(0);
+		pageRank.push_back(make_pair(initialValue, graph.getNodeList().at(i).getContent().getUrl()));
+		futurePageRank.push_back(make_pair(0, graph.getNodeList().at(i).getContent().getUrl()));
+		cout << "\tPages processed: " << i + 1 << "/" << nbPages << '\r' << flush;
 	}
+	cout << "\nDone." << endl;
 	// Iterates until pageRank values are "constant"
 	// WARNING : max number of iterations used for the moment
+	cout << "Computing PageRank..." << endl;
+	cout << "\tProgress: 0%" << '\r' << flush;
 	int maxIt = 20;
 	for (int it = 0; it < maxIt; it++) {
 		// Iterates on all the pages
@@ -206,21 +168,23 @@ PageRank PageRankComputer::computePageRank(Graph<WebPage> & graph, const bool ar
 			// Iterates on all the pages pointed by the current one 
 			IndexList pointedPages = graph.getPointedNodes(i);
 			for (j = 0; j < pointedPages.size(); j++) {
-				futurePageRank.at(pointedPages.at(j)) += pageRank.at(i) / pointedPages.size();
+				futurePageRank.at(pointedPages.at(j)).first += pageRank.at(i).first / pointedPages.size();
 			}
 		}
 		// Once every page has given its pageRank, they receive from the others
 		for (i = 0; i < nbPages; i++) {
 			if (articleVersion) {
 				// Usual version (found on the Internet)
-				pageRank.at(i) = (1 - c) * futurePageRank.at(i) + c / nbPages;
+				pageRank.at(i).first = (1 - c) * futurePageRank.at(i).first + c / nbPages;
 			} else {
 				// Version of the article
-				pageRank.at(i) = (1 - c) * futurePageRank.at(i) + c;
+				pageRank.at(i).first = (1 - c) * futurePageRank.at(i).first + c;
 			}
-			futurePageRank.at(i) = 0;
+			futurePageRank.at(i).first = 0;
 		}
+		cout << "\tProgress: " << (100 / maxIt) + it * 100 / maxIt << "%" << '\r' << flush;
 	}
+	cout << "\nDone." << endl;
 	return pageRank;
 }
 
@@ -241,42 +205,49 @@ PageRank PageRankComputer::computeHyperPageRank(Hypergraph<WebPage> & hypergraph
 	// hyperarcs in the collection
 	double nbReferencedPages = getNbReferencedPages(hypergraph.getHyperarcMatrix());
 	double initialValue = 1 / nbReferencedPages;
+	cout << "Initializing default pageRank on each page..." << endl;
 	for (i = 0; i < nbPages; i++) {
-		pageRank.push_back(initialValue);
-		futurePageRank.push_back(0);
+		pageRank.push_back(make_pair(initialValue, hypergraph.getNodeList().at(i).getContent().getUrl()));
+		futurePageRank.push_back(make_pair(0, hypergraph.getNodeList().at(i).getContent().getUrl()));
+		cout << "\tPages processed: " << i + 1 << "/" << nbPages << '\r' << flush;
 	}
+	cout << "\nDone." << endl;
 	// Iterates until pageRank values are "constant"
 	// WARNING : max number of iterations used for the moment
-	int maxIt = 20;
+	cout << "Computing HyperPageRank..." << endl;
+	cout << "\tProgress: 0%" << '\r' << flush;
+	int maxIt = 10;
 	for (int it = 0; it < maxIt; it++) {
 		// First computes the reputation of the blocks
 		for (i = 0; i < nbBlocks; i++) {
 			IndexList blockPages = hypergraph.getPointingNodes(i);
 			double sum = 0;
 			for (j = 0; j < blockPages.size(); j++) {
-				sum += pageRank.at(blockPages.at(j));
+				sum += pageRank.at(blockPages.at(j)).first;
 			}
-			blockRank.at(i) = sum;
+			blockRank.at(i).first = sum;
 		}
 		// Then iterates on all the blocks
 		for (i = 0; i < nbBlocks; i++) {
 			// Iterates on all the pages pointed by the current block 
 			IndexList pointedPages = hypergraph.getPointedNodes(i);
 			for (j = 0; j < pointedPages.size(); j++) {
-				futurePageRank.at(pointedPages.at(j)) += blockRank.at(i) / pointedPages.size();
+				futurePageRank.at(pointedPages.at(j)).first += blockRank.at(i).first / pointedPages.size();
 			}
 		}
 		// Once every block has given its pageRank, sets the pages pageRank
 		for (i = 0; i < nbPages; i++) {
 			// If a page is not given any reputation by any other one, it means it is not referenced
-			if (futurePageRank.at(i) != 0) {
-				pageRank.at(i) = (1 - c) * futurePageRank.at(i) + c / nbReferencedPages;
+			if (futurePageRank.at(i).first != 0) {
+				pageRank.at(i).first = (1 - c) * futurePageRank.at(i).first + c / nbReferencedPages;
 			} else {
-				pageRank.at(i) = 0;
+				pageRank.at(i).first = 0;
 			}
-			futurePageRank.at(i) = 0;
+			futurePageRank.at(i).first = 0;
 		}
+		cout << "\tProgress: " << (100 / maxIt) + it * 100 / maxIt << "%" << '\r' << flush;
 	}
+	cout << "\nDone." << endl;
 	return pageRank;
 }
 
@@ -285,17 +256,22 @@ PageRank PageRankComputer::computeIndegree(Graph<WebPage>& graph) {
 	indegree.clear();
 	long nbPages = graph.getNodeList().size();
 	long i, j;
+	cout << "Initializing default indegree on each page..." << endl;
 	for (i = 0; i < nbPages; i++) {
-		indegree.push_back(0);
+		indegree.push_back(make_pair(0, graph.getNodeList().at(i).getContent().getUrl()));
+		cout << "\tPages processed: " << i << "/" << nbPages << '\r' << flush;
 	}
+	cout << "\nDone." << endl;
 	// Iterates on all the pages
 	for (i = 0; i < nbPages; i++) {
 		// Iterates on all the pages pointed by the current one 
 		IndexList pointedPages = graph.getPointedNodes(i);
 		for (j = 0; j < pointedPages.size(); j++) {
-			indegree.at(pointedPages.at(j))++;
+			indegree.at(pointedPages.at(j)).first++;
 		}
+		cout << "\tPages processed: " << i + 1 << "/" << nbPages << '\r' << flush;
 	}
+	cout << "\nDone." << endl;
 	return indegree;
 }
 
@@ -306,23 +282,42 @@ PageRank PageRankComputer::computeHyperIndegree(Hypergraph<WebPage>& hypergraph)
 	PageRank hyperIndegree;
 	hyperIndegree.clear();
 	long i, j;
+	cout << "Initializing default indegree on each page..." << endl;
 	for (i = 0; i < nbPages; i++) {
-		hyperIndegree.push_back(0);
+		hyperIndegree.push_back(make_pair(0, hypergraph.getNodeList().at(i).getContent().getUrl()));
+		cout << "\tPages processed: " << i + 1 << "/" << nbPages << '\r' << flush;
 	}
+	cout << "\nDone." << endl;
 	// Iterates on all the blocks
+	cout << "Iterating on blocks:" << endl;
 	for (i = 0; i < nbBlocks; i++) {
 		// Iterates on all the pages pointed by the current block 
 		IndexList pointedPages = hypergraph.getPointedNodes(i);
 		for (j = 0; j < pointedPages.size(); j++) {
-			hyperIndegree.at(pointedPages.at(j))++;
+			hyperIndegree.at(pointedPages.at(j)).first++;
 		}
+		cout << "\tBlocks processed: " << i + 1 << "/" << nbBlocks << '\r' << flush;
 	}
+	cout << "\nDone." << endl;
 	return hyperIndegree;
 }
 
-std::ostream & operator<<(std::ostream & flux, PageRank & pageRank) {
+wostream & operator<<(wostream & flux, PageRank & pageRank) {
+	// Display only the top 20 values
+	cout << "Sorting results..." << endl;
+	sort(pageRank.begin(), pageRank.end(), [](const pair<double, URL> &left, const pair<double, URL> &right) {
+		return left.first > right.first;
+	});
+	cout << "---------- Top 20 ----------" << endl;
+	long double average = 0;
 	for (int i = 0; i < pageRank.size(); i++) {
-		flux << pageRank.at(i) << std::endl;
+		if(i < 20)
+		{
+			flux << "Score: " << pageRank.at(i).first << " - URL: " << pageRank.at(i).second << endl;
+		}
+		average += pageRank.at(i).first;
 	}
+	average = average / pageRank.size();
+	flux << "Average Score: " << average << endl;
 	return flux;
 }

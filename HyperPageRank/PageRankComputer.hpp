@@ -9,7 +9,7 @@
 #include "Hypergraph.hpp"
 #include "WebPage.h"
 
-typedef std::vector<double> PageRank;
+typedef std::vector<std::pair<double,URL>> PageRank;
 
 class PageRankComputer {
 private:
@@ -21,14 +21,6 @@ public:
 	~PageRankComputer();
 	// Loads a graph and an hypergraph from a file
 	void loadGraphAndHypergraph(Graph<WebPage> & graph, Hypergraph<WebPage> & hypergraph, const std::string & nodeFilename, const std::string & edgeFilename);
-
-	// Loads an graph from a file
-	Graph<WebPage> loadGraph(const std::string & nodeFilename, const std::string & edgeFilename);
-	// Loads an hypergraph from a graph
-	// WARNING : Unique_ptr error : it is not possible to return a copy of an hypergraph created in the function, because
-	// this hypegraph contains a matrix using unique_ptr which can't be copied, causing the error
-	// Hypergraph<WebPage> loadHypergraph(const std::string & nodeFilename, const std::string & edgeFilename);
-	
 	// Calculates the PageRank of a graph
 	PageRank computePageRank(Graph<WebPage> & graph, const bool articleVersion);
 	// Calculates the pageRank of an hypergraph
@@ -39,4 +31,4 @@ public:
 	PageRank computeHyperIndegree(Hypergraph<WebPage> & hypergraph);
 };
 
-std::ostream & operator<<(std::ostream & flux, PageRank & pageRank);
+std::wostream & operator<<(std::wostream & flux, PageRank & pageRank);

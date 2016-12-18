@@ -32,7 +32,7 @@ URL WebPage::getUrl() const
 	return this->url;
 }
 
-std::ostream & operator<<(std::ostream & flux, WebPage & webPage) {
+wostream & operator<<(wostream & flux, WebPage & webPage) {
 	flux << webPage.getId() << " : ";
 	flux << webPage.getUrl();
 	return flux;

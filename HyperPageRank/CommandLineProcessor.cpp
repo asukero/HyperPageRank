@@ -28,11 +28,6 @@ void CommandLineProcessor::run()
 		{
 			cout << "Creation du graphe simple et de l'hypergraphe..." << endl;
 			pageRankComputer.loadGraphAndHypergraph(webGraph, webHypergraph, nodeFileName, edgeFileName);
-			//cout << "Creation du graphe simple..." << endl;
-			//webGraph = pageRankComputer.loadGraph(nodeFileName, edgeFileName);
-			//cout << "Creation de l'hypergraphe..." << endl;
-			// Possible to change it for a pointer, avoiding the copy problem explained in PageRankComputer
-			//webHypergraph = pageRankComputer.loadHypergraph(nodeFileName, edgeFileName);
 			fileFound = true;
 		}
 		catch (...)
@@ -59,7 +54,8 @@ void CommandLineProcessor::displayCommands()
 	cout << "- help, ? : affiche la liste des commandes" << endl;
 	cout << "- pagerank : calcul le PageRank pour le WebGraph simple" << endl;
 	cout << "- hyperpagerank: calcul le PageRank pour le Web Hypergraph" << endl;
-	cout << "- recherche [i] : recherche une page web selon son id." << endl;
+	cout << "- indegree : calcul Indegree pour le WebGraph simple" << endl;
+	cout << "- hyperindegree: calcul Indegree pour le Web Hypergraph" << endl;
 	cout << "- quitter : quitte le programme.\n" << endl;
 }
 
@@ -70,6 +66,8 @@ void CommandLineProcessor::readCommand(Graph<WebPage> & webGraph, Hypergraph<Web
 	getline(cin, command);
 	PageRank pageRank;
 	PageRank hyperPageRank;
+	PageRank indegree;
+	PageRank hyperIndegree;
 	if (command == "help" || command == "?")
 	{
 		displayCommands();
@@ -77,17 +75,22 @@ void CommandLineProcessor::readCommand(Graph<WebPage> & webGraph, Hypergraph<Web
 	else if (command == "pagerank")
 	{
 		pageRank = pageRankComputer.computePageRank(webGraph, true);
-		cout << "PageRank : " << endl << pageRank << endl;
+		wcout << "PageRank : " << endl << pageRank << endl;
 	}
 	else if (command == "hyperpagerank")
 	{
-		//hyperPageRank = pageRankComputer.computeHyperPageRank(webHypergraph, true);
-		//cout << "HyperPageRank : " << endl << hyperPageRank << endl;
+		hyperPageRank = pageRankComputer.computeHyperPageRank(webHypergraph);
+		wcout << "HyperPageRank : " << endl << hyperPageRank << endl;
 	}
-	else if (command == "recherche")
+	else if (command == "indegree")
 	{
-		//webGraph.searchNode(node)
-		//cout << node << endl;
+		indegree = pageRankComputer.computeIndegree(webGraph);
+		wcout << "Indegree : " << endl << indegree << endl;
+	}
+	else if (command == "hyperindegree")
+	{
+		hyperIndegree = pageRankComputer.computeHyperPageRank(webHypergraph);
+		wcout << "HyperIndegree : " << endl << hyperIndegree << endl;
 	}
 	else if (command == "quitter")
 	{

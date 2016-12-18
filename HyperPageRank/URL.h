@@ -12,4 +12,4 @@ public:
 	wstring QueryString, Path, Protocol, Host, Port, Domain;
 };
 
-std::ostream & operator<<(std::ostream & flux, URL & url);
+std::wostream & operator<<(std::wostream & flux, URL & url);

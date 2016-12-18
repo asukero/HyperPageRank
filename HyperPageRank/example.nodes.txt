@@ -1,0 +1,6 @@
+4
+node id | outdegree | URL
+0 2 http://www.site.nimp0.fr:8080/index.php?result=true
+1 1 http://nimp1.fr
+2 1 http://www.nimp2.fr
+3 1 http://www.nimp3.fr
